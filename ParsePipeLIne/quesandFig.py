@@ -1,0 +1,2 @@
+#now that all the text and figures are parsed sucessfully now they will be arranged into a json or csv
+# # so that they can be arranged into a json or csv file from which later it will be arranged and converted into a word file later 
