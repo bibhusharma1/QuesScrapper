@@ -1,12 +1,15 @@
-# Microservice run file: `docker compose up` (or `docker compose run quesscrapper`).
-# PDFs go in ./data/input (read-only), the dataset file is the only kept artifact
-# and is written to ./data/save/questions_data.json.
+# Service run file. `docker compose up` starts the HTTP service (UI-facing);
+# `docker compose run --rm quesscrapper cli` runs the one-shot batch CLI.
+# PDFs may come in via ./data/input (read-only); questions_data.json is the
+# only kept artifact and is written to ./data/save.
 
 services:
   quesscrapper:
     build: .
     image: quesscrapper:latest
     container_name: quesscrapper
+    ports:
+      - "8000:8000"
     volumes:
       - ./data/input:/data/input:ro
       - ./data/save:/data/save

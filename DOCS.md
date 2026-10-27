@@ -144,7 +144,12 @@ Lists are comma-separated. Real environment variables (shell / container) overri
 
 ## 4. How to use it (Docker container)
 
-The tool ships as a container. Inside the container:
+The container has **two modes**:
+
+- **HTTP service** (default) — for the **UI** to send requests (see section 5).
+- **Batch CLI** — the one-shot run like the local command; add `cli` to the run command.
+
+For the one-shot batch CLI version:
 
 - **Input:** mount your folder with PDFs at `/data/input`.
 - **Save path:** mount a folder at `/data/save` — the **only thing you need to keep** (`questions_data.json`) is written there.
@@ -159,16 +164,16 @@ docker build -t quesscrapper .
 Or run it with docker compose (same mounts, from the project root):
 
 ```bash
-docker compose run --rm quesscrapper
+docker compose run --rm quesscrapper cli
 ```
 
-Or run the container directly:
+Or run the container directly (batch mode):
 
 ```bash
 docker run --rm \
-  -v /path/to/your/pdfs:/data/input \
+  -v /path/to/your/pdfs:/data/input:ro \
   -v /path/to/where/you/want/the/json:/data/save \
-  quesscrapper
+  quesscrapper cli
 ```
 
 What each line does:
@@ -188,17 +193,82 @@ FAQ you may be thinking about:
 
 ---
 
-## 5. Tests
+## 5. How to use it (HTTP service — for the UI)
+
+**No CLI is needed for the UI** — the container runs a small **FastAPI** HTTP service by default, and the UI simply sends requests to it (`docker run ... quesscrapper` / `docker compose up` starts it on port 8000).
+
+Flow: **UI → POST PDF → service parses → dataset JSON grows → UI reads records back.**
+
+```mermaid
+sequenceDiagram
+    participant UI as Your UI
+    participant S as QuesScrapper service (container :8000)
+    participant J as questions_data.json (save mount)
+
+    UI->>S: GET /health
+    S-->>UI: {"status": "ok"}
+
+    UI->>S: POST /parse/upload (PDF files)
+    S->>S: parse each PDF (text + figures)
+    S->>J: append records (deduped, atomic)
+    S-->>UI: {"processed": [...], "failed": [...]}
+
+    UI->>S: GET /records?limit=50
+    S-->>UI: {"total": N, "records": [...]}
+```
+
+### The endpoints
+
+| Method | Endpoint | What it does |
+|---|---|---|
+| GET | `/health` | liveness check for the UI |
+| POST | `/parse/upload` | **UI sends PDF files** (multipart, field name `files`); each is parsed and appended; broken files reported in the response |
+| POST | `/parse` | parse by paths inside the container (`{"dirs": [...], "pdfs": [...]}`); body optional — falls back to the mounted folders / `.env` selection |
+| GET | `/records` | **UI reads the data**: `{"total": n, "records": [...]}` with optional `?limit=&offset=` |
+
+Interactive docs (try it in the browser, auto-generated): `http://localhost:8000/docs`
+
+### Starting it
+
+```bash
+docker compose up            # from the project root (needs ./data/input and ./data/save folders to exist)
+# or directly:
+docker run -d -p 8000:8000 \
+  -v /path/to/your/pdfs:/data/input:ro \
+  -v /path/to/where/you/want/the/json:/data/save \
+  --name quesscrapper quesscrapper
+```
+
+### Trying it from the command line (what the UI would do)
+
+```bash
+curl http://localhost:8000/health
+
+curl -X POST http://localhost:8000/parse/upload \
+  -F "files=@paper1.pdf" -F "files=@paper2.pdf"
+
+curl "http://localhost:8000/records?limit=5"
+```
+
+Notes:
+
+- Saves go to `QUES_QUESTIONS_JSON` (default `/data/save/questions_data.json` in the container). Same dedupe/upsert rules as every other run — a PDF sent twice is updated once.
+- Uploads and extraction artifacts are request-local temp files that are deleted afterwards; only the dataset JSON grows.
+- UID/GID 1000 note from section 4 applies to any file the service writes into the save mount.
+
+---
+
+## 6. Tests
 
 ```bash
 uv run pytest test/ -v
 ```
 
-The tests make their own tiny PDFs (with text, an image, and a drawn diagram) — they don't need any sample files. They check all 5 steps, the safe re-run behavior, and that one bad PDF doesn't stop the batch. Also runs automatically on GitHub via `.github/workflows/tests.yml`.
+The tests make their own tiny PDFs (with text, an image, and a drawn diagram) — they don't need any sample files. They check all 5 steps, the safe re-run behavior, the HTTP endpoints, and that one bad PDF doesn't stop the batch. Also runs automatically on GitHub via `.github/workflows/tests.yml`.
 
 ---
 
-## 6. What is coming in later phases (not yet)
+## 7. What is coming in later phases (not yet)
 
 1. **OCR** — scanned pages (`needs_ocr_review: true`) will be read by [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR). It needs an NVIDIA GPU (CUDA). It is already prepared — install with `uv sync --extra ocr` — but not wired into the pipeline yet.
 2. **Question splitting** — arranging raw pages into individual questions and their figures.
@@ -206,13 +276,13 @@ The tests make their own tiny PDFs (with text, an image, and a drawn diagram) �
 
 ---
 
-## 7. Folder map (what every file is)
+## 8. Folder map (what every file is)
 
 ```
 ├── .env / .env.example        # YOUR editable settings: which PDFs to read, where to save
 ├── config.py                  # reads .env + applies the defaults
-├── main.py                    # same as the pipeline command, e.g. `uv run python main.py`
-├── Dockerfile                 # makes the container (see section 4)
+├── main.py                    # same as the batch command, e.g. `uv run python main.py`
+├── Dockerfile                 # makes the container (sections 4–5; HTTP service + CLI)
 ├── .dockerignore              # files the container image should skip
 ├── .github/workflows/tests.yml # runs the tests automatically on GitHub
 ├── pyproject.toml / uv.lock   # project name, dependencies, locked versions
@@ -226,11 +296,12 @@ The tests make their own tiny PDFs (with text, an image, and a drawn diagram) �
 ├── ParsePipeLIne/             # the manager layer
 │   ├── processPDF.py          #   runs steps 1–5 + manifest for ONE pdf
 │   ├── quesandFig.py          #   builds records + appends into the JSON
-│   └── pipeline.py            #   loops over ALL pdfs in the input folder
-├── test/                      # the tests (see section 5)
+│   ├── pipeline.py            #   batch mode: loops over ALL pdfs in the input folders
+│   └── service.py             #   HTTP service mode: /health /parse/upload /parse /records (FastAPI)
+├── test/                      # the tests (see section 6)
 │   ├── helpers.py             #   makes tiny test PDFs
 │   ├── test_pdf_read.py, test_image_extract.py, test_vector_figures.py,
-│   ├── test_quesandFig.py, test_pipeline.py
+│   ├── test_quesandFig.py, test_pipeline.py, test_service.py
 │   └── PDFingestion.py        #   old hand-written prototype (kept for history)
 └── sampleData/ques_bank/      # sample question papers (your PDFs go here too)
 ```

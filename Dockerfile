@@ -23,10 +23,17 @@ COPY . .
 # Compose additionally loads .env via env_file (see docker-compose.yml).
 ENV QUES_INPUT_DIRS=/data/input \
     QUES_OUTPUT_DIR=/tmp/qa_extraction \
-    QUES_QUESTIONS_JSON=/data/save/questions_data.json
+    QUES_QUESTIONS_JSON=/data/save/questions_data.json \
+    QUES_PORT=8000
 
 RUN chown -R app:app /app && chmod -R u+rwX,go+rX /app
 
 USER app
 
-ENTRYPOINT ["/app/.venv/bin/python", "-m", "ParsePipeLIne.pipeline"]
+EXPOSE 8000
+
+# Dispatch (see ParsePipeLIne/service.py main()):
+#   default / "service" -> FastAPI HTTP service (for the UI to send requests)
+#   "cli"               -> batch CLI over the configured .env input selection
+ENTRYPOINT ["/app/.venv/bin/python", "-m", "ParsePipeLIne.service"]
+CMD ["service"]

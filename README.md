@@ -27,7 +27,7 @@ You need Python 3.11+ and [uv](https://docs.astral.sh/uv/).
 4. Run: `uv run python -m ParsePipeLIne.pipeline`
 5. Open `sampleData/ques_bank/output/questions_data.json` — that's your data.
 
-**As a Docker container (microservice):**
+**As a Docker container — one-shot batch (CLI):**
 
 1. Build once: `docker build -t quesscrapper .` (or `docker compose build`)
 2. Put PDFs in a folder, then run:
@@ -36,10 +36,28 @@ You need Python 3.11+ and [uv](https://docs.astral.sh/uv/).
 docker run --rm \
   -v /path/to/your/pdfs:/data/input:ro \
   -v /path/to/save:/data/save \
-  quesscrapper
+  quesscrapper cli
 ```
 
 3. Find `questions_data.json` in your save folder. That JSON file is the **only** thing the container keeps — page images, figures and text are temporary and don't need to survive the run.
+
+**As a Docker microservice (HTTP — for a UI to send requests to):**
+
+```bash
+docker run -d -p 8000:8000 \
+  -v /path/to/save:/data/save \
+  --name quesscrapper quesscrapper
+```
+
+No CLI needed by the UI — the container serves a small FastAPI HTTP API on port 8000:
+
+- `GET /health` — is the service up
+- `POST /parse/upload` — UI sends PDF files; they are parsed and appended
+- `POST /parse` — parse from mounted paths (optional body; defaults from config)
+- `GET /records` — UI reads the parsed data back
+- auto-generated try-it docs at `http://localhost:8000/docs`
+
+Full details + a mermaid sequence diagram in [DOCS.md](./DOCS.md#5-how-to-use-it-http-service--for-the-ui).
 
 Settings (which folders/PDFs to read and where to save the JSON) live in the **`.env`** file — copy `.env.example` to `.env` and edit. In the container, the mount points `/data/input` → `/data/save` already cover this; a `.env` passed via compose only overrides them. See the variable table in [DOCS.md](./DOCS.md#3-how-to-use-it-normal-on-your-computer).
 
