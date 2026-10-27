@@ -1,10 +1,23 @@
 [project]
 name = "quesscrapper"
 version = "0.1.0"
-description = "Add your description here"
+description = "Question-bank PDF parser: scrapes raw text and figures from question papers and appends them into one JSON dataset"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "paddleocr[doc-parser]>=3.7.0",
     "pymupdf>=2.0",
 ]
+
+# OCR phase dependency (ParsethePDF/ocr.py — not wired into the pipeline yet).
+# Install with: uv sync --extra ocr  (needs a CUDA-enabled NVIDIA GPU)
+[project.optional-dependencies]
+ocr = [
+    "paddleocr[doc-parser]>=3.7.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]
+
+

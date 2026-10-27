@@ -1,0 +1,9 @@
+# Never bake into the image: local env, caches, sample data, outputs.
+.venv
+.git
+.gitignore
+.commandcode
+__pycache__/
+.pytest_cache/
+sampleData/
+test/
