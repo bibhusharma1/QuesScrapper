@@ -1,77 +1,29 @@
+# ques.md — working notes (PDF sources & plan)
 
-pdf sources main [https://bitmesra.ac.in/Other-Department-Pages/content/1/258/446]
+These are working notes kept on purpose: where the sample question papers came from and what the original plan was. For the up-to-date tool documentation, see `README.md` and `DOCS.md`.
 
-https://bitmesra.ac.in/UploadedDocuments/adminexam/files/MO2025%20QP/AI363%20INTRODUCTION%20TO%20MACHINE%20LEARNING_MID.pdf
+## Where the source PDFs came from
 
-https://bitmesra.ac.in/UploadedDocuments/adminexam/files/MO2025%20QP/CS231%20DATA%20STRUCTURES_MID.pdf
+Main portal page: <https://bitmesra.ac.in/Other-Department-Pages/content/1/258/446>
 
-images screenshots from same where we got the pdf 
-we used a program to convert pdf to images 
-as a sample images which we will use to see do our ocr works or not in images ? to parse the question 
+Sample mid-semester question papers (2025 session):
 
-this is just an entrie simulation of whne someone will acryally uplaod images or pdf to the system will our sustem be able to parse data or not ?
+- <https://bitmesra.ac.in/UploadedDocuments/adminexam/files/MO2025%20QP/AI363%20INTRODUCTION%20TO%20MACHINE%20LEARNING_MID.pdf>
+- <https://bitmesra.ac.in/UploadedDocuments/adminexam/files/MO2025%20QP/CS231%20DATA%20STRUCTURES_MID.pdf>
+- <https://bitmesra.ac.in/UploadedDocuments/adminexam/files/MO2025%20QP/AI24201%20MATHEMATICS%20FOR%20AIML_MID.pdf>
+- <https://bitmesra.ac.in/UploadedDocuments/adminexam/files/MO2025%20QP/CS237%20DATABASE%20MANAGEMENT%20SYSTEM_MID.pdf>
 
+Original idea behind these samples:
 
-https://bitmesra.ac.in/UploadedDocuments/adminexam/files/MO2025%20QP/AI24201%20MATHEMATICS%20FOR%20AIML_MID.pdf
+1. The PDFs above were downloaded from the same portal students would upload from.
+2. We converted PDFs to page images as a test case.
+3. Those page images are used to check the OCR step later — does it parse questions from plain images?
+4. In short: a full simulation of "someone uploads a PDF or image — can our system extract the data or not?" (Word, PPT and other formats are deliberately ignored for now.)
 
-https://bitmesra.ac.in/UploadedDocuments/adminexam/files/MO2025%20QP/CS237%20DATABASE%20MANAGEMENT%20SYSTEM_MID.pdf
+## Output plan notes
 
-#note for now we have ignored word documents, ppt and other formats 
-
-
-
-
-
-sample output of the pdf "sampleData/ques_bank/AI24201 MATHEMATICS FOR AIML_MID.pdf"
-github url : github.raw url to show in the readme file of the in the github or just the link in this case
-
-#manifest.json
-{
-  "source_pdf": "AI24201 MATHEMATICS FOR AIML_MID.pdf",
-  "page_count": 2,
-  "render_dpi": 250,
-  "pages": [
-    {
-      "page_number": 1,
-      "width_pt": 612.0,
-      "height_pt": 792.0,
-      "text_path": "sampleData/ques_bank/output/text/page_0001.txt",
-      "native_text_characters": 2940,
-      "needs_ocr_review": false,
-      "page_image": "sampleData/ques_bank/output/pages/page_0001.png",
-      "render_width_px": 2125,
-      "render_height_px": 2750
-    },
-    {
-      "page_number": 2,
-      "width_pt": 612.0,
-      "height_pt": 792.0,
-      "text_path": "sampleData/ques_bank/output/text/page_0002.txt",
-      "native_text_characters": 1596,
-      "needs_ocr_review": false,
-      "page_image": "sampleData/ques_bank/output/pages/page_0002.png",
-      "render_width_px": 2125,
-      "render_height_px": 2750
-    }
-  ],
-  "embedded_images": [
-    {
-      "page_number": 1,
-      "image_path": "sampleData/ques_bank/output/images/page_0001_image_1.jpeg",
-      "width": 1241,
-      "height": 661
-    },
-    {
-      "page_number": 2,
-      "image_path": "sampleData/ques_bank/output/images/page_0002_image_1.jpeg",
-      "width": 762,
-      "height": 454
-    }
-  ]
-}
-
-
-images scrapperd in this case figures i.e daugrams
-
-images : sampleData/ques_bank/output/images , github.raw url to show in the readme file of the in the github 
-text : sampleData/ques_bank/output/text , github.raw url to show in the readme file of the in the github 
+- The important output (the thing to keep) is the consolidated dataset: `sampleData/ques_bank/output/questions_data.json` — one record per page with `raw_text` + `figure_paths`.
+- Figures ("scraped images") = extracted diagrams: embedded raster ones under `output/<pdf_stem>/images/` and vector-drawn ones under `output/<pdf_stem>/images_vector/`.
+- Per-page raw text: `output/<pdf_stem>/text/`.
+- Everything under `output/` is regenerable by re-running the pipeline; only the dataset file matters.
+- The exact record shape is documented in `DOCS.md` (section "What one record in the JSON looks like") and the per-PDF report file is `output/<pdf_stem>/manifest.json`.

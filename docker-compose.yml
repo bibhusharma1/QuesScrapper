@@ -1,0 +1,14 @@
+# Microservice run file: `docker compose up` (or `docker compose run quesscrapper`).
+# PDFs go in ./data/input (read-only), the dataset file is the only kept artifact
+# and is written to ./data/save/questions_data.json.
+
+services:
+  quesscrapper:
+    build: .
+    image: quesscrapper:latest
+    container_name: quesscrapper
+    volumes:
+      - ./data/input:/data/input:ro
+      - ./data/save:/data/save
+    # Everything else (pages/images/text) goes to /tmp inside the container
+    # and is destroyed when it exits — by design. See DOCS.md section 4.

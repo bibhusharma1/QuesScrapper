@@ -1,19 +1,21 @@
-during test this error came in
-testcode instrcution
+# test.md — running the pipeline
+
+## The command
+
+Always run from the **project root**:
+
+```bash
 uv run python -m ParsePipeLIne.pipeline
+```
 
-Don't run pipeline.py directly.
-uv run python -m ParsePipeLIne.pipeline
+## Do NOT run pipeline.py directly
 
+This fails:
 
-But this command failed:
-python "/home/nsm/Documents/BibhuWorks/QuesScrapper/ParsePipeLIne/pipeline.py"
+```bash
+python /home/nsm/Documents/BibhuWorks/QuesScrapper/ParsePipeLIne/pipeline.py
+```
 
+**Why it fails:** when a Python file is executed directly, Python puts that file's directory (`ParsePipeLIne/`) at the front of the import path. The project root is not on the path, so the sibling package `ParsethePDF` cannot be found.
 
-When you execute a Python file directly, Python puts the script's directory (ParsePipeLIne/) at the front of its import path. The project root isn't necessarily included, so the sibling package ParsethePDF can't be found.
-What to do
-Use this command from your project root:
-uv run python -m ParsePipeLIne.pipeline
-
-
-Don't run pipeline.py directly.
+**Fix:** run it as a module with `-m` from the project root (command at the top). Same is valid: `uv run python main.py`.

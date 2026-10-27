@@ -118,7 +118,13 @@ Build the image once:
 docker build -t quesscrapper .
 ```
 
-Run it for a batch of PDFs:
+Or run it with docker compose (same mounts, from the project root):
+
+```bash
+docker compose run --rm quesscrapper
+```
+
+Or run the container directly:
 
 ```bash
 docker run --rm \
@@ -132,6 +138,8 @@ What each line does:
 - `--rm` — throw the container away after it finishes (temp outputs are thrown away with it, which is fine).
 - Volume 1 — your PDFs go **in**.
 - Volume 2 — your save folder. After the run it contains `questions_data.json` **and nothing else needs to survive**.
+
+The container runs as a **non-root user with uid/gid 1000** (typical Linux host user), so the saved `questions_data.json` stays readable/writable for the host owner — no root files in your save folder.
 
 The container picks paths from these env defaults (already set in the Dockerfile, overridable with `docker run -e ...`): `QUES_INPUT_PDF_FOLDER=/data/input`, `QUES_QUESTIONS_JSON=/data/save/questions_data.json`, `QUES_OUTPUT_DIR=/tmp/qa_extraction`.
 
@@ -166,6 +174,9 @@ The tests make their own tiny PDFs (with text, an image, and a drawn diagram) �
 ├── config.py                  # all paths (can override with env vars)
 ├── main.py                    # same as the pipeline command, e.g. `uv run python main.py`
 ├── Dockerfile                 # makes the container (see section 4)
+├── .dockerignore              # files the container image should skip
+├── .github/workflows/tests.yml # runs the tests automatically on GitHub
+├── pyproject.toml / uv.lock   # project name, dependencies, locked versions
 ├── ParsethePDF/               # the extraction library (each file = one job)
 │   ├── pdf_read.py            #   step 1: read page text
 │   ├── renderPDF.py           #   step 2: photo each page
