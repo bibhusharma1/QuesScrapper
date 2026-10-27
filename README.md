@@ -21,10 +21,11 @@ You need Python 3.11+ and [uv](https://docs.astral.sh/uv/).
 
 **On your computer:**
 
-1. Drop your PDFs into the input folder (default: `sampleData/ques_bank/`).
-2. Install once: `uv sync`
-3. Run: `uv run python -m ParsePipeLIne.pipeline`
-4. Open `sampleData/ques_bank/output/questions_data.json` — that's your data.
+1. Copy `.env.example` to `.env` and edit it: which **PDF folder(s) to read** (`QUES_INPUT_DIRS`), optional **specific PDFs** (`QUES_INPUT_PDFS`), and **which JSON file to save into** (`QUES_QUESTIONS_JSON`). All paths are relative.
+2. Drop your PDFs into the configured folder (default: `sampleData/ques_bank/`).
+3. Install once: `uv sync`
+4. Run: `uv run python -m ParsePipeLIne.pipeline`
+5. Open `sampleData/ques_bank/output/questions_data.json` — that's your data.
 
 **As a Docker container (microservice):**
 
@@ -40,7 +41,9 @@ docker run --rm \
 
 3. Find `questions_data.json` in your save folder. That JSON file is the **only** thing the container keeps — page images, figures and text are temporary and don't need to survive the run.
 
-Settings (which folder the PDFs come from and where the JSON goes) are set in `config.py` or via env vars — see the table in [DOCS.md](./DOCS.md#3-how-to-use-it-normal-on-your-computer).
+Settings (which folders/PDFs to read and where to save the JSON) live in the **`.env`** file — copy `.env.example` to `.env` and edit. In the container, the mount points `/data/input` → `/data/save` already cover this; a `.env` passed via compose only overrides them. See the variable table in [DOCS.md](./DOCS.md#3-how-to-use-it-normal-on-your-computer).
+
+To understand how the tool works inside (endpoints, data flow), DOCS.md has a [mermaid diagram of the whole flow](./DOCS.md#the-whole-flow-as-a-picture-mermaid) — from `.env` config through the extractors down to the appended JSON.
 
 For the full step-by-step guide, folder meanings, settings, Docker usage details, and how the output looks, read **[DOCS.md](./DOCS.md)**.
 

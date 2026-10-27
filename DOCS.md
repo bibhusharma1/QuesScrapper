@@ -34,6 +34,41 @@ For every PDF in the input folder, the pipeline does 5 steps:
 
 Steps 1–4 are per page and saved in a folder named after the PDF, so two PDFs never overwrite each other's files.
 
+### The whole flow as a picture (mermaid)
+
+GitHub/GitLab render this diagram automatically. Roughly: the `.env` file decides **what to read** (folders and/or specific PDFs) and **where to append**; the pipeline works through the PDFs one by one; every produced record is appended into the one dataset JSON.
+
+```mermaid
+flowchart TD
+    A[".env / .env.example<br/>QUES_INPUT_DIRS (PDF folders)<br/>QUES_INPUT_PDFS (optional exact PDFs)<br/>QUES_OUTPUT_DIR (temp)<br/>QUES_QUESTIONS_JSON (save file)"]
+
+    subgraph S["ParsePipeLIne (the manager)"]
+        B["pipeline.py<br/>collect PDFs: scan every<br/>folder + explicit list"]
+        C["processPDF.py<br/>runs the 4 extractors<br/>for ONE pdf"]
+    end
+
+    subgraph E["ParsethePDF (the extractors)"]
+        D1["pdf_read.py<br/>text of every page"]
+        D2["renderPDF.py<br/>page photos (PNG)"]
+        D3["image_extract.py<br/>embedded raster figures"]
+        D4["vector_figures.py<br/>drawn (vector) figures"]
+    end
+
+    subgraph W["Write layer"]
+        F1["quesandFig.py<br/>build records:<br/>raw text + figure paths<br/>+ per-PDF manifest.json"]
+        F2["append_records()<br/>dedupe + sort + atomic write"]
+    end
+
+    A --> B
+    B --> C
+    C --> D1 & D2 & D3 & D4
+    D1 & D2 & D3 & D4 --> F1
+    F1 --> F2
+    F2 --> G[("questions_data.json<br/>the one kept output")]
+```
+
+What happens on a failure: if one PDF is broken, it is reported and skipped — the others still run. If the dataset file is unreadable, it is backed up as `.bak` and a fresh file starts.
+
 ### What one record in the JSON looks like
 
 ```json
@@ -92,15 +127,18 @@ Important:
 - Always run from the **project root folder**.
 - Do NOT run `python ParsePipeLIne/pipeline.py` directly (it breaks imports — see `test.md`).
 
-### Changing the paths
+### Changing the paths: the .env file
 
-All paths live in `config.py`. Each one can also be set as an environment variable (env var wins):
+All paths are configured in the **`.env`** file in the project root. `.env.example` is the template — copy it, rename to `.env`, and edit. All paths are **relative** (to the project root, or the container workdir) for security — no absolute machine paths are needed.
 
-| Config name | Env var | Default | Meaning |
-|---|---|---|---|
-| `INPUT_PDF_FOLDER` | `QUES_INPUT_PDF_FOLDER` | `sampleData/ques_bank` | where your PDFs are |
-| `OUTPUT_DIR` | `QUES_OUTPUT_DIR` | `sampleData/ques_bank/output` | temp output (pages, images, text) |
-| `QUESTIONS_JSON_FILE` | `QUES_QUESTIONS_JSON` | `.../output/questions_data.json` | **the save file — the one that matters** |
+Lists are comma-separated. Real environment variables (shell / container) override `.env`.
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `QUES_INPUT_DIRS` | `sampleData/ques_bank` | **which PDF folder(s) to read.** Comma-separated `dir1, dir2` to scan several directories at once (searched recursively). |
+| `QUES_INPUT_PDFS` | *(empty)* | **read ONLY these PDFs** — exact names/paths, comma-separated. When set, `QUES_INPUT_DIRS` is ignored and exactly the listed files are parsed. Leave empty to scan whole folders. |
+| `QUES_OUTPUT_DIR` | `sampleData/ques_bank/output` | temp extraction folder (pages, images, text) — disposable, deleted freely |
+| `QUES_QUESTIONS_JSON` | `.../questions_data.json` | **the JSON file to save/append into — the one output that matters** |
 
 ---
 
@@ -141,7 +179,7 @@ What each line does:
 
 The container runs as a **non-root user with uid/gid 1000** (typical Linux host user), so the saved `questions_data.json` stays readable/writable for the host owner — no root files in your save folder.
 
-The container picks paths from these env defaults (already set in the Dockerfile, overridable with `docker run -e ...`): `QUES_INPUT_PDF_FOLDER=/data/input`, `QUES_QUESTIONS_JSON=/data/save/questions_data.json`, `QUES_OUTPUT_DIR=/tmp/qa_extraction`.
+The container picks paths from these env defaults (already set in the Dockerfile, overridable with `docker run -e ...` or via `env_file: .env` in compose, which is optional): `QUES_INPUT_DIRS=/data/input`, `QUES_QUESTIONS_JSON=/data/save/questions_data.json`, `QUES_OUTPUT_DIR=/tmp/qa_extraction`.
 
 FAQ you may be thinking about:
 
@@ -171,7 +209,8 @@ The tests make their own tiny PDFs (with text, an image, and a drawn diagram) �
 ## 7. Folder map (what every file is)
 
 ```
-├── config.py                  # all paths (can override with env vars)
+├── .env / .env.example        # YOUR editable settings: which PDFs to read, where to save
+├── config.py                  # reads .env + applies the defaults
 ├── main.py                    # same as the pipeline command, e.g. `uv run python main.py`
 ├── Dockerfile                 # makes the container (see section 4)
 ├── .dockerignore              # files the container image should skip

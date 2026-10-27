@@ -13,7 +13,7 @@ uv run python -m ParsePipeLIne.pipeline
 This fails:
 
 ```bash
-python /home/nsm/Documents/BibhuWorks/QuesScrapper/ParsePipeLIne/pipeline.py
+python ParsePipeLIne/pipeline.py
 ```
 
 **Why it fails:** when a Python file is executed directly, Python puts that file's directory (`ParsePipeLIne/`) at the front of the import path. The project root is not on the path, so the sibling package `ParsethePDF` cannot be found.

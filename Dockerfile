@@ -20,7 +20,8 @@ RUN uv sync --frozen --no-dev
 COPY . .
 
 # Container defaults: PDFs in, dataset JSON out (mount and set these).
-ENV QUES_INPUT_PDF_FOLDER=/data/input \
+# Compose additionally loads .env via env_file (see docker-compose.yml).
+ENV QUES_INPUT_DIRS=/data/input \
     QUES_OUTPUT_DIR=/tmp/qa_extraction \
     QUES_QUESTIONS_JSON=/data/save/questions_data.json
 

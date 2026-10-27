@@ -10,5 +10,10 @@ services:
     volumes:
       - ./data/input:/data/input:ro
       - ./data/save:/data/save
+    env_file:
+      # Optional override of container defaults (e.g. your own paths);
+      # if the file does not exist, the Dockerfile defaults apply.
+      - path: .env
+        required: false
     # Everything else (pages/images/text) goes to /tmp inside the container
     # and is destroyed when it exits — by design. See DOCS.md section 4.

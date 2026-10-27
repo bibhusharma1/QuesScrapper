@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "pymupdf>=2.0",
+    "python-dotenv>=1.2.4",
 ]
 
 # OCR phase dependency (ParsethePDF/ocr.py — not wired into the pipeline yet).

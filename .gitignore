@@ -18,5 +18,8 @@ sampleData/ques_bank/output/
 *.json.tmp
 *.json.bak
 
+# Local secrets/configuration (use .env.example as the template)
+.env
+
 # OS files
 .DS_Store

@@ -13,7 +13,8 @@ def batch_env(tmp_path, monkeypatch):
     input_dir = tmp_path / "input"
     input_dir.mkdir()
 
-    monkeypatch.setattr(pipeline, "INPUT_PDF_FOLDER", str(input_dir))
+    monkeypatch.setattr(pipeline, "INPUT_DIRS", [str(input_dir)])
+    monkeypatch.setattr(pipeline, "INPUT_PDFS", [])
     monkeypatch.setattr(pipeline, "OUTPUT_DIR", str(tmp_path / "out"))
     monkeypatch.setattr(
         pipeline, "QUESTIONS_JSON_FILE", str(tmp_path / "questions_data.json")
@@ -71,3 +72,33 @@ def test_empty_input_folder_exits(batch_env):
     with pytest.raises(SystemExit) as excinfo:
         pipeline.run()
     assert excinfo.value.code == 1
+
+
+def test_explicit_pdf_list_reads_only_listed_files(batch_env, monkeypatch):
+    input_dir, _, json_file = batch_env
+    pdf_one = make_pdf(input_dir / "bookOne.pdf", ["one"])
+    make_pdf(input_dir / "bookTwo.pdf", ["two"])
+
+    # Folder still configured; the explicit list must take precedence.
+    monkeypatch.setattr(pipeline, "INPUT_DIRS", [str(input_dir)])
+    monkeypatch.setattr(pipeline, "INPUT_PDFS", [str(pdf_one)])
+
+    pipeline.run()
+
+    data = json.loads(json_file.read_text(encoding="utf-8"))
+    assert [record["pdf_name"] for record in data] == ["bookOne.pdf"]
+
+
+def test_multiple_input_dirs_are_scanned(batch_env, tmp_path, monkeypatch):
+    input_dir, _, json_file = batch_env
+    second_dir = tmp_path / "more-PDFs"
+    second_dir.mkdir()
+    make_pdf(input_dir / "bookOne.pdf", ["one"])
+    make_pdf(second_dir / "bookTwo.pdf", ["two"])
+
+    monkeypatch.setattr(pipeline, "INPUT_DIRS", [str(input_dir), str(second_dir)])
+
+    pipeline.run()
+
+    data = json.loads(json_file.read_text(encoding="utf-8"))
+    assert {record["pdf_name"] for record in data} == {"bookOne.pdf", "bookTwo.pdf"}
