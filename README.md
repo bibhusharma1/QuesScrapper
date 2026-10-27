@@ -15,6 +15,33 @@ uv sync
 uv run python -m ParsePipeLIne.pipeline
 ```
 
-For the full step-by-step guide, folder meanings, settings, Docker usage (how to run it in a container), and how the output looks, read **[DOCS.md](./DOCS.md)**.
+## How to use it
+
+You need Python 3.11+ and [uv](https://docs.astral.sh/uv/).
+
+**On your computer:**
+
+1. Drop your PDFs into the input folder (default: `sampleData/ques_bank/`).
+2. Install once: `uv sync`
+3. Run: `uv run python -m ParsePipeLIne.pipeline`
+4. Open `sampleData/ques_bank/output/questions_data.json` — that's your data.
+
+**As a Docker container (microservice):**
+
+1. Build once: `docker build -t quesscrapper .` (or `docker compose build`)
+2. Put PDFs in a folder, then run:
+
+```bash
+docker run --rm \
+  -v /path/to/your/pdfs:/data/input:ro \
+  -v /path/to/save:/data/save \
+  quesscrapper
+```
+
+3. Find `questions_data.json` in your save folder. That JSON file is the **only** thing the container keeps — page images, figures and text are temporary and don't need to survive the run.
+
+Settings (which folder the PDFs come from and where the JSON goes) are set in `config.py` or via env vars — see the table in [DOCS.md](./DOCS.md#3-how-to-use-it-normal-on-your-computer).
+
+For the full step-by-step guide, folder meanings, settings, Docker usage details, and how the output looks, read **[DOCS.md](./DOCS.md)**.
 
 Sample question papers are in `sampleData/ques_bank/` (from the [BIT Mesra exam portal](https://bitmesra.ac.in/Other-Department-Pages/content/1/258/446)).
