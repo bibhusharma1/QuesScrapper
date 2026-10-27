@@ -192,3 +192,5 @@ They build their own tiny PDFs (text, image, drawn diagram) — no sample files 
 | `sampleData/ques_bank/` | sample PDFs — drop yours here too |
 
 Working notes kept on purpose: `ques.md` (PDF sources), `test.md` (run-command gotcha).
+
+Building another service/orchestrator around this tool? **[PIPELINE.md](./PIPELINE.md)** documents every contract (config, dataset JSON, HTTP endpoints, extension points).

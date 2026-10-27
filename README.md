@@ -56,7 +56,7 @@ Without Docker, the same service runs from your project:
 uv run python -m ParsePipeLIne.service     # same endpoints, same port 8000
 ```
 
-Batch mode stays `uv run python -m ParsePipeLIne.pipeline`. Full guide: **[DOCS.md](./DOCS.md)**.
+Batch mode stays `uv run python -m ParsePipeLIne.pipeline`. Full guide: **[DOCS.md](./DOCS.md)** · integration contracts for other services: **[PIPELINE.md](./PIPELINE.md)**.
 
 Sample PDFs live in `sampleData/ques_bank/` (sources: [BIT Mesra exam portal](https://bitmesra.ac.in/Other-Department-Pages/content/1/258/446)).
 
