@@ -45,6 +45,14 @@ Settings (which folders/PDFs to read and where to save the JSON) live in the **`
 
 To understand how the tool works inside (endpoints, data flow), DOCS.md has a [mermaid diagram of the whole flow](./DOCS.md#the-whole-flow-as-a-picture-mermaid) — from `.env` config through the extractors down to the appended JSON.
 
+## GPU (CUDA)?
+
+**Not needed for now.** Everything the tool does today — PDF text, page photos, figure extraction — runs on the CPU with the `pymupdf` library. No NVIDIA card, no CUDA.
+
+- **Non-CUDA users:** you lose nothing right now — the full current pipeline works CPU-only, and the Docker image is built this way too.
+- **When CUDA DOES become required:** in the later **OCR phase** (scanned pages, `needs_ocr_review: true`), the plan uses [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR), which needs an NVIDIA GPU with CUDA. That dependency is kept optional (install with `uv sync --extra ocr`) and is not wired into the pipeline yet.
+- **No-GPU OCR alternatives (later decision):** run PaddleOCR in CPU mode (much slower), use a cloud OCR service, or split OCR into a separate service on GPU hardware. To be decided when the OCR phase starts.
+
 For the full step-by-step guide, folder meanings, settings, Docker usage details, and how the output looks, read **[DOCS.md](./DOCS.md)**.
 
 Sample question papers are in `sampleData/ques_bank/` (from the [BIT Mesra exam portal](https://bitmesra.ac.in/Other-Department-Pages/content/1/258/446)).
