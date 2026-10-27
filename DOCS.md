@@ -256,6 +256,36 @@ Notes:
 - Uploads and extraction artifacts are request-local temp files that are deleted afterwards; only the dataset JSON grows.
 - UID/GID 1000 note from section 4 applies to any file the service writes into the save mount.
 
+### What the UI sends, what happens
+
+**A list of files `[file1, file2, file3]`** — send them all in one request; the `files` field is repeatable. All three get parsed and appended in that single call:
+
+```bash
+curl -X POST http://localhost:8000/parse/upload \
+  -F "files=@file1.pdf" -F "files=@file2.pdf" -F "files=@file3.pdf"
+```
+
+```json
+{"processed": [{"pdf_name": "file1.pdf", "pages": 2},
+               {"pdf_name": "file2.pdf", "pages": 1},
+               {"pdf_name": "file3.pdf", "pages": 4}],
+ "failed":   [{"file": "not_a_pdf.txt", "error": "not a .pdf file"}]}
+```
+
+- Every entry is reported per file: parsed files under `processed` (with page counts), broken/non-PDF entries under `failed`. One bad file never blocks the others.
+- Sending a file again (same request or later) does **not** duplicate anything — its records are replaced (dedupe by pdf name + page number).
+
+**A list of folders from the UI** — put them in a `POST /parse` request; each folder is scanned for PDFs and everything found is parsed and appended:
+
+```bash
+curl -X POST http://localhost:8000/parse \
+  -H "Content-Type: application/json" \
+  -d '{"dirs": ["folder/one", "folder/two"]}'
+```
+
+- Send `"pdfs": [...]` instead to read **only** those exact files (same precedence as `QUES_INPUT_PDFS` in `.env`).
+- Sending no body falls back to the default selection: the mounted folders (or the `.env` `QUES_INPUT_DIRS` / `QUES_INPUT_PDFS`).
+
 ---
 
 ## 6. Tests

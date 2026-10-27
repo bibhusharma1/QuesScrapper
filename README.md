@@ -59,6 +59,22 @@ No CLI needed by the UI — the container serves a small FastAPI HTTP API on por
 
 Full details + a mermaid sequence diagram in [DOCS.md](./DOCS.md#5-how-to-use-it-http-service--for-the-ui).
 
+**What the UI sends, what happens:**
+
+- **A list of files** `[file1, file2, file3]` → send them all in **one** `POST /parse/upload` request (the field is repeatable). Every file is parsed and appended in that single call, and the response tells you per file what happened:
+
+```json
+{"processed": [{"pdf_name": "file1.pdf", "pages": 2},
+               {"pdf_name": "file2.pdf", "pages": 1},
+               {"pdf_name": "file3.pdf", "pages": 4}],
+ "failed":   [{"file": "not_a_pdf.txt", "error": "not a .pdf file"}]}
+```
+
+Send the same file twice (or again later) — nothing is duplicated; its records are replaced. Non-PDF entries are reported under `failed`, the good files still get processed.
+
+- **A list of folders** → send them in a `POST /parse` request (`{"dirs": ["folder/one", "folder/two"]}` — comma-separated in `.env` for the default). The service scans each folder for PDFs and appends everything it finds. Supplying `"pdfs": [...]` instead reads *only* those exact files.
+- **Anything else** stays the same: the dataset JSON keeps growing at `QUES_QUESTIONS_JSON` (default `/data/save/questions_data.json` in the container).
+
 Settings (which folders/PDFs to read and where to save the JSON) live in the **`.env`** file — copy `.env.example` to `.env` and edit. In the container, the mount points `/data/input` → `/data/save` already cover this; a `.env` passed via compose only overrides them. See the variable table in [DOCS.md](./DOCS.md#3-how-to-use-it-normal-on-your-computer).
 
 To understand how the tool works inside (endpoints, data flow), DOCS.md has a [mermaid diagram of the whole flow](./DOCS.md#the-whole-flow-as-a-picture-mermaid) — from `.env` config through the extractors down to the appended JSON.

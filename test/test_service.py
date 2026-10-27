@@ -47,6 +47,35 @@ def test_parse_upload_appends_records(client, tmp_path):
     assert "python" in data[0]["raw_text"]
 
 
+def test_parse_upload_takes_a_list_of_files(client, tmp_path):
+    """The UI sends [file1, file2, file3] in one request — all get parsed."""
+    http, json_file = client
+    pdf_one = make_pdf(tmp_path / "one.pdf", ["alpha"])
+    pdf_two = make_pdf(tmp_path / "two.pdf", ["beta"])
+    pdf_three = make_pdf(tmp_path / "three.pdf", ["gamma"])
+    pdf_one_bytes = pdf_one.read_bytes()
+
+    response = http.post(
+        "/parse/upload",
+        files=[
+            ("files", ("one.pdf", pdf_one_bytes, "application/pdf")),
+            ("files", ("two.pdf", pdf_two.read_bytes(), "application/pdf")),
+            ("files", ("three.pdf", pdf_three.read_bytes(), "application/pdf")),
+            # Sending the same file twice is fine: dedupe replaces its records.
+            ("files", ("one.pdf", pdf_one_bytes, "application/pdf")),
+        ],
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["failed"] == []
+    assert [p["pdf_name"] for p in body["processed"]] == ["one.pdf", "two.pdf", "three.pdf", "one.pdf"]
+
+    # Dataset holds each file once (upsert by pdf_name + page_number).
+    data = json.loads(json_file.read_text(encoding="utf-8"))
+    assert {record["pdf_name"] for record in data} == {"one.pdf", "two.pdf", "three.pdf"}
+
+
 def test_parse_upload_skips_non_pdf_files(client, tmp_path):
     http, json_file = client
     pdf_path = make_pdf(tmp_path / "test_pdf.pdf", ["question one"])
