@@ -136,6 +136,12 @@ docker run -d -p 8000:8000 \
   quesscrapper
 ```
 
+Or without Docker (uv version — same service, reads paths from your local `.env`):
+
+```bash
+uv run python -m ParsePipeLIne.service
+```
+
 Try it:
 
 ```bash

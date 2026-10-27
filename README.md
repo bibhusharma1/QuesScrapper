@@ -50,6 +50,14 @@ docker run -d -p 8000:8000 -v /path/to/save:/data/save quesscrapper
 
 Try it in the browser: `http://localhost:8000/docs`. Broken files are reported under `failed` and never block the rest. Only the JSON file survives a container run — images/text are temporary.
 
+**Without Docker (uv version):** install once (`uv sync`), set paths in `.env`, start the same HTTP service with:
+
+```bash
+uv run python -m ParsePipeLIne.service
+```
+
+Same endpoints, same port 8000 — the UI cannot tell the difference. Batch mode stays `uv run python -m ParsePipeLIne.pipeline`.
+
 Sample PDFs live in `sampleData/ques_bank/`. Sources: [BIT Mesra exam portal](https://bitmesra.ac.in/Other-Department-Pages/content/1/258/446).
 
 ## GPU?
