@@ -55,3 +55,7 @@ Sample PDFs live in `sampleData/ques_bank/`. Sources: [BIT Mesra exam portal](ht
 ## GPU?
 
 Not needed. Everything today runs on CPU (`pymupdf`). CUDA is only required later, for the OCR phase (PaddleOCR). Full guide: **[DOCS.md](./DOCS.md)**.
+
+
+question figures scrapped
+https://raw.githubusercontent.com/bibhusharma1/QuesScrapper/main/sampleData/ques_bank/output/AI363 INTRODUCTION TO MACHINE LEARNING_MID/images_vector/page_0001_drawing_1.png

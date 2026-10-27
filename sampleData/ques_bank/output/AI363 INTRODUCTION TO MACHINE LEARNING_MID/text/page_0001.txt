@@ -1,0 +1,52 @@
+BIRLA INSTITUTE OF TECHNOLOGY, MESRA, RANCHI
+                                    (MID SEMESTER EXAMINATION)
+CLASS: B.Tech.                                                      SEMESTER : V
+BRANCH: AI                                                              SESSION : MO/2025
+
+                      SUBJECT: AI363 INTRODUCTION TO MACHINE LEARNING
+TIME: 02 Hours                                                      FULL MARKS: 25
+
+
+INSTRUCTIONS:
+1. The question paper contains 5 questions each of 5 marks and total 25 marks.
+2. Attempt all questions.
+3. The missing data, if any, may be assumed suitably.
+4. Tables/Data handbook/Graph paper etc., if applicable, will be supplied to the candidates
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+
+                                                                          CO  BL
+ Q.1(a)  Define Machine Learning. Explain its significance with real-life examples.                 [2]  1    1,2
+ Q.1(b)  Differentiate between Supervised, Semi-supervised, and Unsupervised learning with   [3]  1    2,4
+          suitable examples.
+
+
+ Q.2(a)  Explain the concept of Eigenvalues and Eigenvectors. Show step-by-step calculation   [2]  2    2,3
+         of eigenvalues for the matrix
+                                           ቀ4  1                                         2  3ቁ
+
+ Q.2(b)  Describe the working of Principal Component Analysis (PCA). How does PCA help in   [3]  2    2,3
+         dimensionality reduction?
+
+
+ Q.3(a)   In linear regression, how is prediction accuracy measured  ?                               [2]  1
+ Q.3(b)  Apply the technique of linear regression (closed form solution) on the following data:    [3]  3
+         X          1          2          34         4          5
+          y          12         18         22         28         35
+
+       Compute the value of y for x = 8.
+
+
+
+ Q.4(a)  Discuss the Bias-Variance Trade-off in supervised learning. Illustrate with a suitable   [2]  2    2,4
+         diagram.
+ Q.4(b)  Explain Regularization in linear regression. How does it help to reduce overfitting?      [3]  2    2,5
+
+
+ Q.5(a)  Explain Logistic Regression as a classification algorithm. Derive its cost function.        [2]  3    2,4
+ Q.5(b)  State important issues in classification problems. Suggest possible solutions.             [3]  3    4
+
+
+
+                                         :::::22/09/2025 :::::M

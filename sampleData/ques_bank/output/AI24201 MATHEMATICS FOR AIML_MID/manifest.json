@@ -1,0 +1,44 @@
+{
+  "source_pdf": "AI24201 MATHEMATICS FOR AIML_MID.pdf",
+  "page_count": 2,
+  "render_dpi": 250,
+  "pages": [
+    {
+      "page_number": 1,
+      "width_pt": 612.0,
+      "height_pt": 792.0,
+      "text_path": "sampleData/ques_bank/output/AI24201 MATHEMATICS FOR AIML_MID/text/page_0001.txt",
+      "native_text_characters": 2940,
+      "needs_ocr_review": false,
+      "page_image": "sampleData/ques_bank/output/AI24201 MATHEMATICS FOR AIML_MID/pages/page_0001.png",
+      "render_width_px": 2125,
+      "render_height_px": 2750
+    },
+    {
+      "page_number": 2,
+      "width_pt": 612.0,
+      "height_pt": 792.0,
+      "text_path": "sampleData/ques_bank/output/AI24201 MATHEMATICS FOR AIML_MID/text/page_0002.txt",
+      "native_text_characters": 1596,
+      "needs_ocr_review": false,
+      "page_image": "sampleData/ques_bank/output/AI24201 MATHEMATICS FOR AIML_MID/pages/page_0002.png",
+      "render_width_px": 2125,
+      "render_height_px": 2750
+    }
+  ],
+  "embedded_images": [
+    {
+      "page_number": 1,
+      "image_path": "sampleData/ques_bank/output/AI24201 MATHEMATICS FOR AIML_MID/images/page_0001_image_1.jpeg",
+      "width": 1241,
+      "height": 661
+    },
+    {
+      "page_number": 2,
+      "image_path": "sampleData/ques_bank/output/AI24201 MATHEMATICS FOR AIML_MID/images/page_0002_image_1.jpeg",
+      "width": 762,
+      "height": 454
+    }
+  ],
+  "vector_figures": []
+}

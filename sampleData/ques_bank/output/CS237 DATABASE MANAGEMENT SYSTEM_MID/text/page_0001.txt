@@ -1,0 +1,56 @@
+BIRLA INSTITUTE OF TECHNOLOGY, MESRA, RANCHI
+                                    (MID SEMESTER EXAMINATION)
+CLASS: B.TECH.                                                      SEMESTER : V
+BRANCH: ARTIFICIAL INTELLIGENCE                                          SESSION : MO/2025
+
+                        SUBJECT: CS237 DATABASE MANAGEMENT SYSTEM
+TIME: 02 HOURS                                                     FULL MARKS: 25
+
+
+INSTRUCTIONS:
+1. The question paper contains 5 questions each of 5 marks and total 25 marks.
+2. Attempt all questions.
+3. The missing data, if any, may be assumed suitably.
+4. Tables/Data handbook/Graph paper etc., if applicable, will be supplied to the candidates
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+
+                                                                         CO  BL
+ Q.1(a)  Explain the difference between logical and physical data independence.                [2]       2
+ Q.1(b)  Explain overall data base Architecture with a neat diagram.                              [3]       2
+
+
+ Q.2(a)  What is a Weak Entity set? Give an example.                                              [2]       1
+ Q.2(b)  Draw the ER diagram for a Banking Enterprise.                                            [3]       2
+
+
+ Q.3(a)   List to reasons why null values might be introduced into the database                   [2]       1
+ Q.3(b)  Consider the given database below, give expressions in SQL for the                      [3]       3
+         following queries.
+          Lives (person name, street, city)
+        Works (person-name, company_name, salary)
+        Located on (company_name, city)
+        Manager (person_name, manager_name)
+                 a) find names of all People who work for B.I.T.
+                 b) Find the city of all people who work for B.I.T.
+                  c) Find the name, city of all people who work for B.I.T and
+                   earn more than Rs3000
+                 d) Find people who live in the same city as their company they
+                  work for.
+                 e) Find names of all people live in the same city & on the same
+                     street as their manager.
+                      f) Find all people who do not work for B.I.T
+            .
+
+
+ Q.4(a)  What is Tuple Relational Calculus? Give an example.                                      [2]       2
+ Q.4(b)  Give 2 examples each for SELECT (σ) and PROJECT (π) operation of Relational Algebra.   [3]       2
+
+
+ Q.5(a)  What is functional dependency? Explain 2nd Normal Form.                                [2]       2
+ Q.5(b)  What is Normalization? Why do we need it?                                                [3]       2
+
+
+
+                                         :::::23/09/2025 :::::M

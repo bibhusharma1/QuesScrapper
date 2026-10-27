@@ -1,0 +1,55 @@
+BIRLA INSTITUTE OF TECHNOLOGY, MESRA, RANCHI
+                                    (MID SEMESTER EXAMINATION)
+CLASS: IMSc./BTECH                                                  SEMESTER : III/ADD
+BRANCH: MATHS & COMP./CSE                                              SESSION : MO/2025
+
+                              SUBJECT: CS231 DATA STRUCTURES
+TIME: 02 Hours                                                      FULL MARKS: 25
+
+
+INSTRUCTIONS:
+1. The question paper contains 5 questions each of 5 marks and total 25 marks.
+2. Attempt all questions.
+3. The missing data, if any, may be assumed suitably.
+4. Tables/Data handbook/Graph paper etc., if applicable, will be supplied to the candidates
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+
+                                                                          CO  BL
+ Q.1(a)  What is an abstract data type? Explain with the help of an example.                      [2]  1    1
+ Q.1(b)  Compare and contrast between static and dynamic data structures.                       [3]  1    2
+
+
+ Q.2(a)  Summarize the essential criteria that an algorithm must satisfy.                           [2]  1    2
+ Q.2(b)  Compute the complexity of the given algorithm with detailed step counts:                [3]   1,2  4,5
+         void sub (int a[n][m], int b[n][m]) {
+            for (int i=0; i<n; i++) {
+              for (int j=0; j<m; j++) {
+                   c[i][j] = a[i][j] – b[i][j];
+                 }
+              }
+            }
+
+
+ Q.3(a)  Highlight a major drawback of linear queues. How can we resolve the problem?          [2]  2    2,4
+ Q.3(b)  Convert the following Infix Expression to the equivalent Postfix Expression:               [3]  2    3,5
+       A * (B ↑ C) – D * E
+         Note: ↑has the highest precedence
+
+
+ Q.4(a)  Evaluate the following Postfix Expression:                                                   [2]  2    3.5
+        2 3 * 4 * 5 – 6 + 7 – (i.e. Two Three * Four * Five – Six + Seven -)
+ Q.4(b)  Write the pseudocode to insert a given element into a queue.                             [3]   2,3  3,6
+
+
+ Q.5(a)  Differentiate between a linked list and an array in terms of memory allocation and   [2]  2    2
+        element access.
+ Q.5(b)  Consider the below given linked list:                                                        [3]   2,   3,6
+        7  2  5  8  2  6  2  NULL                                                 3
+         Write the pseudocode to traverse the list and count how many times the number ‘2’
+        appears in the given list.
+
+
+
+                                         :::::18/09/2025 :::::E
