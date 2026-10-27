@@ -18,3 +18,19 @@ Same portal students upload from — so the tool later works for real uploads to
 - Keep: `questions_data.json` (one record per page, `raw_text` + `figure_paths`).
 - Regenerate anytime by re-running the pipeline: text in `output/<pdf_stem>/text/`, pictures in `images/`, drawn figures in `images_vector/`, report in `manifest.json`.
 - Later the OCR phase uses the page images to check it can parse questions from plain images.
+
+## Extracted figures (samples)
+
+Rendered directly from the repo (`raw.githubusercontent.com` links, spaces URL-encoded):
+
+![AI363 — vector drawing figure](https://raw.githubusercontent.com/bibhusharma1/QuesScrapper/main/sampleData/ques_bank/output/AI363%20INTRODUCTION%20TO%20MACHINE%20LEARNING_MID/images_vector/page_0001_drawing_1.png)
+
+![AI24201 p1 — normal distribution figure](https://raw.githubusercontent.com/bibhusharma1/QuesScrapper/main/sampleData/ques_bank/output/AI24201%20MATHEMATICS%20FOR%20AIML_MID/images/page_0001_image_1.jpeg)
+
+![AI24201 p2 — Markov model figure](https://raw.githubusercontent.com/bibhusharma1/QuesScrapper/main/sampleData/ques_bank/output/AI24201%20MATHEMATICS%20FOR%20AIML_MID/images/page_0002_image_1.jpeg)
+
+Local paths (same files):
+
+- `sampleData/ques_bank/output/AI363 INTRODUCTION TO MACHINE LEARNING_MID/images_vector/page_0001_drawing_1.png`
+- `sampleData/ques_bank/output/AI24201 MATHEMATICS FOR AIML_MID/images/page_0001_image_1.jpeg`
+- `sampleData/ques_bank/output/AI24201 MATHEMATICS FOR AIML_MID/images/page_0002_image_1.jpeg`

@@ -7,9 +7,9 @@ Reads question-paper PDFs → saves each page's **text** and **figures** → app
 
 ```mermaid
 flowchart LR
-    A[.env<br/>which PDFs + save path] --> B[pipeline<br/>reads every PDF]
-    B --> C[extract<br/>text + figures]
-    C --> D[(questions_data.json)]
+    A[".env<br/>which PDFs + save path"] --> B["pipeline<br/>reads every PDF"]
+    B --> C["extract<br/>text + figures"]
+    C --> D[("questions_data.json")]
 ```
 
 ## How to use
@@ -50,20 +50,16 @@ docker run -d -p 8000:8000 -v /path/to/save:/data/save quesscrapper
 
 Try it in the browser: `http://localhost:8000/docs`. Broken files are reported under `failed` and never block the rest. Only the JSON file survives a container run — images/text are temporary.
 
-**Without Docker (uv version):** install once (`uv sync`), set paths in `.env`, start the same HTTP service with:
+Without Docker, the same service runs from your project:
 
 ```bash
-uv run python -m ParsePipeLIne.service
+uv run python -m ParsePipeLIne.service     # same endpoints, same port 8000
 ```
 
-Same endpoints, same port 8000 — the UI cannot tell the difference. Batch mode stays `uv run python -m ParsePipeLIne.pipeline`.
+Batch mode stays `uv run python -m ParsePipeLIne.pipeline`. Full guide: **[DOCS.md](./DOCS.md)**.
 
-Sample PDFs live in `sampleData/ques_bank/`. Sources: [BIT Mesra exam portal](https://bitmesra.ac.in/Other-Department-Pages/content/1/258/446).
+Sample PDFs live in `sampleData/ques_bank/` (sources: [BIT Mesra exam portal](https://bitmesra.ac.in/Other-Department-Pages/content/1/258/446)).
 
-## GPU?
+## GPU (CUDA)?
 
-Not needed. Everything today runs on CPU (`pymupdf`). CUDA is only required later, for the OCR phase (PaddleOCR). Full guide: **[DOCS.md](./DOCS.md)**.
-
-
-question figures scrapped
-https://raw.githubusercontent.com/bibhusharma1/QuesScrapper/main/sampleData/ques_bank/output/AI363 INTRODUCTION TO MACHINE LEARNING_MID/images_vector/page_0001_drawing_1.png
+Not needed. Everything today runs on CPU (`pymupdf`); CUDA only matters for the later OCR phase.

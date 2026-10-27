@@ -99,16 +99,16 @@ docker run --rm \
 
 ---
 
-## 5. Run as a container (HTTP service — for the UI)
+## 5. Run the HTTP service (for the UI)
 
-Default mode: the container starts a small **FastAPI** service on port 8000.
+Default container mode: a small **FastAPI** service on port 8000.
 
 **UI → send PDFs → service parses → JSON grows → UI reads back:**
 
 ```mermaid
 sequenceDiagram
     participant UI
-    participant S as service (:8000)
+    participant S as service on port 8000
     participant J as questions_data.json
 
     UI->>S: GET /health
@@ -139,6 +139,7 @@ docker run -d -p 8000:8000 \
 Or without Docker (uv version — same service, reads paths from your local `.env`):
 
 ```bash
+# starts the HTTP service on :8000
 uv run python -m ParsePipeLIne.service
 ```
 
